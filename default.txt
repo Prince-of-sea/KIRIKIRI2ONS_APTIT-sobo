@@ -1,0 +1,148 @@
+;mode800
+*define
+
+caption "<<-TITLE->> for ONScripter"
+nsa
+
+globalon
+rubyon
+transmode alpha
+rmenu "セーブ",save,"ロード",load 
+effectcut
+humanz 10
+windowback
+
+defsub bgmstopfadeout
+defsub sestopfadeout
+
+;エフェクト定義 - 1
+effect 11,10,500
+effect 12,10,1500
+effect 13,18,1500,"data\rule\rule28.png"
+;<<-EFFECT->>
+
+
+game
+;----------------------------------------
+
+;***名前表示***
+*tp
+if $1!="" if $2="" setwindow 40,470,28,4,24,24,0,3,20,0,0,"syscg\textwindow.png",0,390
+if $1="" if $2!="" setwindow 80,230,27,4,24,24,0,3,20,0,0,"syscg\black50.png",0,0
+if $1!="" lsp 5,":s/24,24,0;#ffffff"+$1,40,420
+if $1="" csp 5
+$0\
+mov $2,$1	;$2に$1を代入
+mov $1,""	;$1を空に
+return
+
+
+;選択肢表示
+*select_mode
+mov %3,0:bclear
+spbtn 28,8:spbtn 29,9
+*sel_loop
+skipoff
+btnwait %3
+if %3!=8 if %3!=9 goto *sel_loop
+csp 28:csp 29
+return
+
+
+;***BGM再生、停止時のフェードイン/フェードアウト用*** - ttps://chappy.exblog.jp/5872275/
+*bgmstopfadeout
+getparam %0
+bgmfadeout %0
+stop
+bgmfadeout 0
+return
+
+
+;***SE再生、停止時のフェードイン/フェードアウト用***
+*sestopfadeout
+getparam %0
+for %2=100 to 0
+	sevol %2
+	wait %0/100
+next
+dwavestop 0
+return
+
+
+;----------------------------------------
+*start
+texton
+saveon
+bgmvol 30
+
+mov $2,"ダミーテキスト"
+setcursor 0,":a/16,66,2;data\system\LineBreak_a.png",0,0
+setcursor 1,":a/16,66,2;data\system\PageBreak_a.png",0,0
+
+
+;----------------------------------------
+csp 5:bg "syscg\medi1.png",11
+wait 2000
+
+csp 5:bg white,11
+wait 1000
+
+csp 5:bg "syscg\medi2.png",12
+wait 3000
+
+csp 5:bg white,11
+wait 1000
+
+csp 5:bg "syscg\medi3.png",12
+wait 3000
+
+csp 5:bg white,11
+wait 1000
+
+csp 5:bg "syscg\logo00.png",12
+csp 5:bg "syscg\logo01.png",13
+
+dwave 1,"cv\brandcall.ogg"
+wait 4000
+
+csp 5:bg white,11
+wait 1000
+
+csp 5:bg "syscg\caution001.png",12
+wait 1000
+
+csp 5:bg "syscg\caution002.png",12
+wait 1000
+
+csp 5:bg "syscg\caution003.png",12
+wait 3000
+
+dwave 1,"cv\titlecall.ogg"
+
+
+;----------------------------------------
+*title
+	bg "syscg\title_bg.png",11
+
+	lsp 21,":a/3,0,3;syscg\title_btn_start.png",70 ,520
+	lsp 22,":a/3,0,3;syscg\title_btn_load.png" ,340,520
+	lsp 23,":a/3,0,3;syscg\title_btn_exit.png" ,700,520
+
+	print 1
+
+	bclear
+	spbtn 21,1
+	spbtn 22,2
+	spbtn 23,3
+
+*title_loop
+	btnwait %1
+	print 1
+
+	if %1=1 csp 21:csp 22:csp 23:goto *scr_ks
+	if %1=2 systemcall load
+	if %1=3 end
+goto *title_loop
+
+
+;----------ここまでテンプレ----------
