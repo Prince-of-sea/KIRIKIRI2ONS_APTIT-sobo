@@ -143,7 +143,7 @@ dwave 1,"cv\titlecall.ogg"
 	print 1
 
 	if %1=1 csp 21:csp 22:csp 23:csp 24:csp 25:csp 26:goto *scr_ks
-	if %1=3 systemcall load
+	if %1=3 systemcall load:goto *title_loop
 	if %1=6 end
 goto *title_loop
 
