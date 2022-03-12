@@ -183,7 +183,7 @@ for ks_path in glob.glob(os.path.join(scenario_dir, '*')):
 
 			elif re.search(r'\[end_link\]', line):#選択肢おわり
 				line = 'gosub *select_mode\n'
-				for i,a in enumerate(sel_sparg,28):
+				for i,a in enumerate(sel_sparg,8):#28のボタン番号→8
 					line += 'if %3='+str(i)+' goto *'+a+'\n'
 
 			elif re.search(r'\*[A-z0-9_]+\|', line):
