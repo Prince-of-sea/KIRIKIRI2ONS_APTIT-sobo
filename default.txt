@@ -27,10 +27,15 @@ game
 
 ;***名前表示***
 *tp
-if $1!="" if $2="" setwindow 40,470,28,4,24,24,0,3,20,0,0,"syscg\textwindow.png",0,390
-if $1="" if $2!="" setwindow 80,230,27,4,24,24,0,3,20,0,0,"syscg\black50.png",0,0
+if $1!="" if $2=="" mov $3,"T"
+if $1=="" if $2!="" mov $3,""
+;<<-ALL_WINDOW_MODE->>
+
+if $3!="" setwindow 40,470,28,4,24,24,0,3,20,0,0,"syscg\textwindow.png",0,390
+if $3=="" setwindow 80,230,27,4,24,24,0,3,20,0,0,"syscg\black50.png",0,0
+
 if $1!="" lsp 5,":s/24,24,0;#ffffff"+$1,40,420
-if $1="" csp 5
+if $1=="" csp 5
 $0\
 mov $2,$1	;$2に$1を代入
 mov $1,""	;$1を空に
@@ -39,12 +44,13 @@ return
 
 ;選択肢表示
 *select_mode
+vsp 11,0
 mov %3,0:bclear
 spbtn 28,8:spbtn 29,9
 *sel_loop
 skipoff
 btnwait %3
-if %3!=8 if %3!=9 goto *sel_loop
+if %3!=8 if %3!=9 vsp 11,1:goto *sel_loop
 csp 28:csp 29
 return
 
@@ -102,7 +108,7 @@ wait 1000
 csp 5:bg "syscg\logo00.png",12
 csp 5:bg "syscg\logo01.png",13
 
-dwave 1,"cv\brandcall.ogg"
+;<<-BRANDCALL->>
 wait 4000
 
 csp 5:bg white,11
@@ -117,8 +123,7 @@ wait 1000
 csp 5:bg "syscg\caution003.png",12
 wait 3000
 
-dwave 1,"cv\titlecall.ogg"
-
+;<<-TITLECALL->>
 
 ;----------------------------------------
 *title

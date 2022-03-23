@@ -13,6 +13,7 @@ sel_spnum = 28
 sel_sparg = []
 effect_list=[]
 
+
 #--------------------def--------------------
 def quodel(s):
 	s=str(s).replace('"', '')
@@ -135,11 +136,11 @@ def def_kakkoline(line):
 #--------------------event--------------------
 add0txt_effect = 'エフェクト定義 - 2\n'
 
-with open(first_ks, encoding='utf-16') as f:
+with open(first_ks, encoding='utf-16', errors='ignore') as f:
 	txt_f = f.read()
 	add0txt_title = re.search(r'\[title name="(.+?)(　Ver.\...)?"\]', txt_f).group(1)
 
-with open(os.path.join(same_hierarchy,'default.txt')) as f:
+with open(os.path.join(same_hierarchy, 'default.txt')) as f:
 	txt = f.read()
 
 for ks_path in glob.glob(os.path.join(scenario_dir, '*')):
@@ -147,7 +148,7 @@ for ks_path in glob.glob(os.path.join(scenario_dir, '*')):
 	with open(ks_path, 'rb') as f:
 		char_code =chardet.detect(f.read())['encoding']
 
-	with open(ks_path, encoding=char_code) as f:
+	with open(ks_path, encoding=char_code, errors='ignore') as f:
 		#ks名をそのままonsのgoto先のラベルとして使い回す
 		txt += '\n\n*' + os.path.splitext(os.path.basename(ks_path))[0] + '_ks\n'
 
@@ -214,9 +215,31 @@ txt = txt.replace(r'<<-EFFECT->>', add0txt_effect)
 
 #作品個別処理
 if add0txt_title[0]=='曾':#138
+	txt = txt.replace(r';<<-BRANDCALL->>', r'dwave 1,"cv\brandcall.ogg"')
+	txt = txt.replace(r';<<-TITLECALL->>', r'dwave 1,"cv\titlecall.ogg"')
 	txt = txt.replace(r'goto *GameEnd', r'goto *title')#終了後タイトルに戻る
 	txt = txt.replace(r'goto *b05_000', r'select "ＧＯＯＤＥＮＤへ",*c05_000,"ＢＡＤＥＮＤへ",*b05_000')#選択分岐処理実装面倒だったので
-	txt = txt.replace(r'bgm "bgm\bgmed01.ogg"', 'dwave 2,"bgm\\bgmed01.ogg"\nsaveoff:csp 5:btndef "syscg\\staff.png"\nfor %5=0 to 6000\nblt 0,0,800,600,0,0+%5,800,600:wait 16\nnext\nofscpy:click\ndwavestop 2:return\n')#wait 16 ≒97/3000
+
+	end_pic = 6000
+	end_snd = 97
+
+elif add0txt_title[:2]=='まご':#173
+	txt = txt.replace(r';<<-BRANDCALL->>', r'dwave 1,"cv\brandcall00.ogg"')
+	txt = txt.replace(r';<<-TITLECALL->>', r'dwave 1,"cv\titlecall00.ogg"')
+	txt = txt.replace(r'goto *Gamebad', r'goto *title')#終了後タイトルに戻る
+	txt = txt.replace(r';<<-ALL_WINDOW_MODE->>', r'mov $3,"A"')#キャラ名の有無でのウィンドウ変更を無効化
+
+	end_pic = 6700
+	end_snd = 106
+
+else:
+	txt = False
 
 
-open(os.path.join(same_hierarchy,'0.txt'), 'w').write(txt)
+if txt:
+
+
+	#低スペック機での動作を見据え、スクロール時のフレーム数を1/10程度にしてます
+	txt = txt.replace(r'bgm "bgm\bgmed01.ogg"', 'dwave 2,"bgm\\bgmed01.ogg"\nsaveoff:csp 5:btndef "syscg\\staff.png"\nfor %5=0 to '+str(int(end_pic/10))+'\nblt 0,0,800,600,0,0+%5*10,800,600:wait '+str(int(end_snd/end_pic*10000))+'\nnext\nofscpy:click\ndwavestop 2:return\n')
+	
+	open(os.path.join(same_hierarchy,'0.txt'), 'w', errors='ignore').write(txt)
