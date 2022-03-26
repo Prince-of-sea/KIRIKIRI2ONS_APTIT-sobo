@@ -213,21 +213,46 @@ for i,e in enumerate(effect_list,21):#エフェクト定義用の配列を命令
 txt = txt.replace(r'<<-TITLE->>', add0txt_title)
 txt = txt.replace(r'<<-EFFECT->>', add0txt_effect)
 
-#作品個別処理
-if add0txt_title[0]=='曾':#138
-	txt = txt.replace(r';<<-BRANDCALL->>', r'dwave 1,"cv\brandcall.ogg"')
-	txt = txt.replace(r';<<-TITLECALL->>', r'dwave 1,"cv\titlecall.ogg"')
+#作品個別処理 - ホントはこの辺も自動取得～変換したいが技術力不足...
+# $10 ブランドコール
+# $11 タイトルコール
+# $12 タイトルBGM(.\data\config\title_cfg.ksに記載)
+# %10 カーソルは固定位置か否か(abssetcursor利用)
+# %11 無名時ウィンドウ変更が掛かるか否か
+
+if add0txt_title[:3]=='妻の祖':#121
+	txt = txt.replace(r'*Gamebad', r'goto *title')#終了後タイトルに戻る
+
+	nsc_str10 = r'cv\brandcall.ogg'
+	nsc_str11 = r'cv\titlecall.ogg'
+	nsc_str12 = r'bgm\bgm01.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
+
+	end_pic = 6600
+	end_snd = 112
+
+elif add0txt_title[0]=='曾':#138
 	txt = txt.replace(r'goto *GameEnd', r'goto *title')#終了後タイトルに戻る
 	txt = txt.replace(r'goto *b05_000', r'select "ＧＯＯＤＥＮＤへ",*c05_000,"ＢＡＤＥＮＤへ",*b05_000')#選択分岐処理実装面倒だったので
+
+	nsc_str10 = r'cv\brandcall.ogg'
+	nsc_str11 = r'cv\titlecall.ogg'
+	nsc_str12 = r'bgm\bgm19.ogg'
+	nsc_num10 = 0
+	nsc_num11 = 1
 
 	end_pic = 6000
 	end_snd = 97
 
 elif add0txt_title[:2]=='まご':#173
-	txt = txt.replace(r';<<-BRANDCALL->>', r'dwave 1,"cv\brandcall00.ogg"')
-	txt = txt.replace(r';<<-TITLECALL->>', r'dwave 1,"cv\titlecall00.ogg"')
 	txt = txt.replace(r'goto *Gamebad', r'goto *title')#終了後タイトルに戻る
-	txt = txt.replace(r';<<-ALL_WINDOW_MODE->>', r'mov $3,"A"')#キャラ名の有無でのウィンドウ変更を無効化
+
+	nsc_str10 = r'cv\brandcall00.ogg'
+	nsc_str11 = r'cv\titlecall00.ogg'
+	nsc_str12 = r'bgm\bgm20.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
 
 	end_pic = 6700
 	end_snd = 106
@@ -237,9 +262,10 @@ else:
 
 
 if txt:
+	#設定反映
+	txt = txt.replace(r';<<-MODE_SETTING->>', r'mov %10,'+str(nsc_num10)+r':mov %11,'+str(nsc_num11)+r':mov $10,"'+nsc_str10+r'":mov $11,"'+nsc_str11+r'":mov $12,"'+nsc_str12+r'"')
 
-
-	#低スペック機での動作を見据え、スクロール時のフレーム数を1/10程度にしてます
+	#エンディング - 低スペック機での動作を見据え、スクロール時のフレーム数を1/10程度にしてます(それでも処理落ちする)
 	txt = txt.replace(r'bgm "bgm\bgmed01.ogg"', 'dwave 2,"bgm\\bgmed01.ogg"\nsaveoff:csp 5:btndef "syscg\\staff.png"\nfor %5=0 to '+str(int(end_pic/10))+'\nblt 0,0,800,600,0,0+%5*10,800,600:wait '+str(int(end_snd/end_pic*10000))+'\nnext\nofscpy:click\ndwavestop 2:return\n')
 	
 	open(os.path.join(same_hierarchy,'0.txt'), 'w', errors='ignore').write(txt)
