@@ -7,7 +7,7 @@ nsa
 globalon
 rubyon
 transmode alpha
-rmenu "セーブ",save,"ロード",load,"リセット",reset
+;<<-RMENU->>
 effectcut
 humanz 10
 windowback
@@ -127,17 +127,18 @@ wait 3000
 
 ;----------------------------------------
 *title
-	dwave 1,$11
+	if %12==0 bg "syscg\title_bg.png",11
+	if %12!=0 bg "syscg\trial_bg.png",11
+
 	bgm $12
+	dwave 1,$11
 
-	bg "syscg\title_bg.png",11
-
-	lsp 21,":a/3,0,3;syscg\title_btn_start.png" ,70 ,520
-	lsp 22,":a/3,0,3;syscg\title_btn_qload.png" ,170,520
-	lsp 23,":a/3,0,3;syscg\title_btn_load.png"  ,340,520
-	lsp 24,":a/3,0,3;syscg\title_btn_config.png",450,520
-	lsp 25,":a/3,0,3;syscg\title_btn_omake.png" ,580,520
-	lsp 26,":a/3,0,3;syscg\title_btn_exit.png" ,700,520
+	lsp 21,":a/3,0,3;syscg\title_btn_start.png" ,66 ,513
+	lsp 22,":a/3,0,3;syscg\title_btn_qload.png" ,170,513
+	if %12=0 lsp 23,":a/3,0,3;syscg\title_btn_load.png"  ,336,513
+	lsp 24,":a/3,0,3;syscg\title_btn_config.png",446,513
+	if %12=0 lsp 25,":a/3,0,3;syscg\title_btn_omake.png",576,513
+	lsp 26,":a/3,0,3;syscg\title_btn_exit.png" ,700,513
 
 	print 1
 

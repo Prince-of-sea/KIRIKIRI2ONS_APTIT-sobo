@@ -5,14 +5,13 @@ import os
 import re
 
 same_hierarchy = (os.path.dirname(sys.argv[0]))#同一階層のパスを変数へ代入
-char_dir=os.path.join(same_hierarchy,'char')
 scenario_dir = os.path.join(same_hierarchy,'data','scenario')
 first_ks = os.path.join(same_hierarchy,'data','script','first.ks')
+char_dir=os.path.join(same_hierarchy,'char')
 
 sel_spnum = 28
 sel_sparg = []
 effect_list=[]
-
 
 #--------------------def--------------------
 def quodel(s):
@@ -219,10 +218,11 @@ txt = txt.replace(r'<<-EFFECT->>', add0txt_effect)
 # $12 タイトルBGM(.\data\config\title_cfg.ksに記載)
 # %10 カーソルは固定位置か否か(abssetcursor利用)
 # %11 無名時ウィンドウ変更が掛かるか否か
+# %12 体験版かどうか
+
+nsc_num12 = int('体験版' in add0txt_title)
 
 if add0txt_title[:3]=='妻の祖':#121
-	txt = txt.replace(r'*Gamebad', r'goto *title')#終了後タイトルに戻る
-
 	nsc_str10 = r'cv\brandcall.ogg'
 	nsc_str11 = r'cv\titlecall.ogg'
 	nsc_str12 = r'bgm\bgm01.ogg'
@@ -233,21 +233,17 @@ if add0txt_title[:3]=='妻の祖':#121
 	end_snd = 112
 
 elif add0txt_title[0]=='曾':#138
-	txt = txt.replace(r'goto *GameEnd', r'goto *title')#終了後タイトルに戻る
 	txt = txt.replace(r'goto *b05_000', r'select "ＧＯＯＤＥＮＤへ",*c05_000,"ＢＡＤＥＮＤへ",*b05_000')#選択分岐処理実装面倒だったので
-
 	nsc_str10 = r'cv\brandcall.ogg'
 	nsc_str11 = r'cv\titlecall.ogg'
 	nsc_str12 = r'bgm\bgm19.ogg'
 	nsc_num10 = 0
 	nsc_num11 = 1
 
-	end_pic = 6000
+	end_pic = 6600
 	end_snd = 97
 
 elif add0txt_title[:2]=='まご':#173
-	txt = txt.replace(r'goto *Gamebad', r'goto *title')#終了後タイトルに戻る
-
 	nsc_str10 = r'cv\brandcall00.ogg'
 	nsc_str11 = r'cv\titlecall00.ogg'
 	nsc_str12 = r'bgm\bgm20.ogg'
@@ -263,9 +259,15 @@ else:
 
 if txt:
 	#設定反映
-	txt = txt.replace(r';<<-MODE_SETTING->>', r'mov %10,'+str(nsc_num10)+r':mov %11,'+str(nsc_num11)+r':mov $10,"'+nsc_str10+r'":mov $11,"'+nsc_str11+r'":mov $12,"'+nsc_str12+r'"')
+	txt = txt.replace('\n*Gamebad', '\n*Gamebad\ngoto *title')#終了後タイトルに戻る
+	txt = txt.replace(r';<<-MODE_SETTING->>', r'mov %10,'+str(nsc_num10)+r':mov %11,'+str(nsc_num11)+r':mov %12,'+str(nsc_num12)+r':mov $10,"'+nsc_str10+r'":mov $11,"'+nsc_str11+r'":mov $12,"'+nsc_str12+r'"')
 
-	#エンディング - 低スペック機での動作を見据え、スクロール時のフレーム数を1/10程度にしてます(それでも処理落ちする)
-	txt = txt.replace(r'bgm "bgm\bgmed01.ogg"', 'dwave 2,"bgm\\bgmed01.ogg"\nsaveoff:csp 5:btndef "syscg\\staff.png"\nfor %5=0 to '+str(int(end_pic/10))+'\nblt 0,0,800,600,0,0+%5*10,800,600:wait '+str(int(end_snd/end_pic*10000))+'\nnext\nofscpy:click\ndwavestop 2:return\n')
-	
+	if not nsc_num12:#製品版
+		#エンディング - 低スペック機での動作を見据え、スクロール時のフレーム数を1/10程度にしてます(それでも処理落ちする)
+		txt = txt.replace(r'bgm "bgm\bgmed01.ogg"', 'dwave 2,"bgm\\bgmed01.ogg"\nsaveoff:csp 5:btndef "syscg\\staff.png"\nfor %5=0 to '+str(int(end_pic/10))+'\nblt 0,0,800,600,0,0+%5*10,800,600:wait '+str(int(end_snd/end_pic*10000))+'\nnext\nofscpy:click\ndwavestop 2:return\n')
+		txt = txt.replace(r';<<-RMENU->>', r'rmenu "セーブ",save,"ロード",load,"リセット",reset')
+	else:#体験版
+		txt = txt.replace(r';<<-RMENU->>', r'rmenu "リセット",reset')
+
+
 	open(os.path.join(same_hierarchy,'0.txt'), 'w', errors='ignore').write(txt)
