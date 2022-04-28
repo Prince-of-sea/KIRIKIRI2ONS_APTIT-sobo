@@ -5,11 +5,14 @@
  Pythonの勉強を兼ねて作ってみました ~~もっと真面目に勉強しろ~~<br>
 
 ## 現時点での対応タイトル
+ - www.appetite-game.com/apt_095.html
  - www.appetite-game.com/apt_121.html
+ - www.appetite-game.com/apt_130.html
  - www.appetite-game.com/apt_138.html
+ - www.appetite-game.com/apt_155.html
  - www.appetite-game.com/apt_173.html
 
-(多分各作品の体験版でも動作すると思います)<br>
+多分各作品の体験版でも動作すると思います(未確認)<br>
 <br>
 Github上で書いたら消されかねないタイトルなのでURL表記で誤魔化してます(誤魔化せているとは言っていない)<br>
 将来的に対応作品は増やす予定ですが、~~作者にやる気が無いため~~再現性向上アップデートは(多分)ないです<br>
@@ -37,7 +40,7 @@ Github上で書いたら消されかねないタイトルなのでURL表記で�
 ~~MPPC製昆布割とこんな感じの適当な出来のやつ多かったよね~~<br>
 
 ## 使い方
-1. [GARBro](https://drive.google.com/file/d/1gH9nNRxaz8GexN0B1hWyUc3o692bkWXX/view)で元作品のXP3をすべて展開(復号化はHashCrypt/画像はPNGで出力)
+1. [GARBro](https://drive.google.com/file/d/1gH9nNRxaz8GexN0B1hWyUc3o692bkWXX/view)で元作品のXP3をすべて展開(復号化が必要な場合はHashCryptで展開/画像はPNGで出力)
 2. [このコンバータ](https://github.com/Prince-of-sea/KIRIKIRI2ONS_APTIT-sobo/releases/latest)を展開物と同じ場所に置いておく
 3. py(またはexe)を叩いて0.txtが出たら完☆成 やったぁ！
 4. [任意].ksや.tjs等のいらない展開物の削除とか

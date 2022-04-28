@@ -142,12 +142,13 @@ wait 3000
 
 	print 1
 
+*title_loop
 	bclear
+
 	spbtn 21,1
 	spbtn 23,3
 	spbtn 26,6
 
-*title_loop
 	btnwait %1
 	print 1
 

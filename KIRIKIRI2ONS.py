@@ -7,11 +7,11 @@ import re
 same_hierarchy = (os.path.dirname(sys.argv[0]))#同一階層のパスを変数へ代入
 scenario_dir = os.path.join(same_hierarchy,'data','scenario')
 first_ks = os.path.join(same_hierarchy,'data','script','first.ks')
-char_dir=os.path.join(same_hierarchy,'char')
+char_dir = os.path.join(same_hierarchy,'char')
 
 sel_spnum = 28
 sel_sparg = []
-effect_list=[]
+effect_list = []
 
 #--------------------def--------------------
 def quodel(s):
@@ -213,8 +213,8 @@ txt = txt.replace(r'<<-TITLE->>', add0txt_title)
 txt = txt.replace(r'<<-EFFECT->>', add0txt_effect)
 
 #作品個別処理 - ホントはこの辺も自動取得～変換したいが技術力不足...
-# $10 ブランドコール
-# $11 タイトルコール
+# $10 ブランドコール(.\data\script\mode_title.ksに記載)
+# $11 タイトルコール(.\data\script\mode_title.ksに記載)
 # $12 タイトルBGM(.\data\config\title_cfg.ksに記載)
 # %10 カーソルは固定位置か否か(abssetcursor利用)
 # %11 無名時ウィンドウ変更が掛かるか否か
@@ -222,7 +222,17 @@ txt = txt.replace(r'<<-EFFECT->>', add0txt_effect)
 
 nsc_num12 = int('体験版' in add0txt_title)
 
-if add0txt_title[:3]=='妻の祖':#121
+if add0txt_title[:3]=='ボクの':#95
+	nsc_str10 = r'cv\brandcall.ogg'
+	nsc_str11 = r'cv\titlecall.ogg'
+	nsc_str12 = r'bgm\bgm26.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
+
+	end_pic = 6900
+	end_snd = 136
+
+elif add0txt_title[:3]=='妻の祖':#121
 	nsc_str10 = r'cv\brandcall.ogg'
 	nsc_str11 = r'cv\titlecall.ogg'
 	nsc_str12 = r'bgm\bgm01.ogg'
@@ -231,6 +241,17 @@ if add0txt_title[:3]=='妻の祖':#121
 
 	end_pic = 6600
 	end_snd = 112
+
+elif add0txt_title[:2]=='ばぁ':#130
+	txt = txt.replace(r'goto *07_000', r'select "ＥＮＤ１へ",*07_000,"ＥＮＤ２へ",*08_000,"ＥＮＤ３へ",*09_000,"ＥＮＤ４へ",*10_000')#選択分岐処理実装面倒だったので
+	nsc_str10 = r'cv\brandcall01.ogg'
+	nsc_str11 = r'cv\titlecall01.ogg'
+	nsc_str12 = r'bgm\bgm15.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
+
+	end_pic = 6900
+	end_snd = 116
 
 elif add0txt_title[0]=='曾':#138
 	txt = txt.replace(r'goto *b05_000', r'select "ＧＯＯＤＥＮＤへ",*c05_000,"ＢＡＤＥＮＤへ",*b05_000')#選択分岐処理実装面倒だったので
@@ -242,6 +263,17 @@ elif add0txt_title[0]=='曾':#138
 
 	end_pic = 6600
 	end_snd = 97
+
+elif add0txt_title[:2]=='孫の':#155
+	txt = txt.replace(r'goto *c01_000', r'select "ＧＯＯＤＥＮＤへ",*c01_000,"ＢＡＤＥＮＤへ",*test'+'\n*test')#選択分岐処理実装面倒だったので
+	nsc_str10 = r'cv\brandcall00.ogg'
+	nsc_str11 = r'cv\titlecall00.ogg'
+	nsc_str12 = r'bgm\bgm20.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
+
+	end_pic = 6700
+	end_snd = 84
 
 elif add0txt_title[:2]=='まご':#173
 	nsc_str10 = r'cv\brandcall00.ogg'
@@ -268,6 +300,5 @@ if txt:
 		txt = txt.replace(r';<<-RMENU->>', r'rmenu "セーブ",save,"ロード",load,"リセット",reset')
 	else:#体験版
 		txt = txt.replace(r';<<-RMENU->>', r'rmenu "リセット",reset')
-
 
 	open(os.path.join(same_hierarchy,'0.txt'), 'w', errors='ignore').write(txt)
