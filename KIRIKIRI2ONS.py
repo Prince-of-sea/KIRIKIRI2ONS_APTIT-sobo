@@ -222,7 +222,18 @@ txt = txt.replace(r'<<-EFFECT->>', add0txt_effect)
 
 nsc_num12 = int('体験版' in add0txt_title)
 
-if add0txt_title[:3]=='ボクの':#95
+if add0txt_title[:3]=='祖母と':#85
+	txt = txt.replace(r'goto *40_021', r'select "ＥＮＤ１へ",*40_021,"ＥＮＤ２へ",*test'+'\n*test')#選択分岐処理実装面倒だったので
+	nsc_str10 = r'cv\brandcall.ogg'
+	nsc_str11 = r'cv\titlecall.ogg'
+	nsc_str12 = r'bgm\bgm26.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
+
+	end_pic = 6600
+	end_snd = 124
+
+elif add0txt_title[:3]=='ボクの':#95
 	nsc_str10 = r'cv\brandcall.ogg'
 	nsc_str11 = r'cv\titlecall.ogg'
 	nsc_str12 = r'bgm\bgm26.ogg'
@@ -231,6 +242,39 @@ if add0txt_title[:3]=='ボクの':#95
 
 	end_pic = 6900
 	end_snd = 136
+
+elif add0txt_title[:3]=='祖母の':#102
+	nsc_str10 = r'cv\brandcall.ogg'
+	nsc_str11 = r'cv\titlecall.ogg'
+	nsc_str12 = r'bgm\bgm26.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
+
+	end_pic = 6800
+	end_snd = 119
+
+elif add0txt_title[:3]=='義祖母':#104
+	txt = txt.replace(r'goto *30_000', r'select "ＥＮＤ１へ",*20_000,"ＥＮＤ２へ",*test'+'\n*test')#選択分岐処理実装面倒だったので
+	nsc_str10 = r'cv\brandcall.ogg'
+	nsc_str11 = r'cv\titlecall.ogg'
+	nsc_str12 = r'bgm\bgm26.ogg'
+	nsc_num10 = 1
+	nsc_num11 = 0
+
+	end_pic = 6800
+	end_snd = 137
+
+elif add0txt_title[:4]=='あの頃、':#108
+	txt = txt.replace(r';;;;;主人公：', 'mov %4,1\n;')
+	txt = txt.replace(r'goto *20_000', r'select "ＥＮＤ１へ",*20_000,"ＥＮＤ２へ",*test'+'\n*test')#選択分岐処理実装面倒だったので
+	nsc_str10 = r'cv\brandcall.ogg'
+	nsc_str11 = r'cv\titlecall.ogg'
+	nsc_str12 = r'bgm\bgm01.ogg'
+	nsc_num10 = 0
+	nsc_num11 = 1
+
+	end_pic = 6600
+	end_snd = 103
 
 elif add0txt_title[:3]=='妻の祖':#121
 	nsc_str10 = r'cv\brandcall.ogg'
